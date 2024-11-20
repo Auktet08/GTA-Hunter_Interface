@@ -3,8 +3,8 @@ import re
 import csv
 
 def main():
-    timecode = "2024-11-19_164958"
-    directory = Path(f"{timecode}_full_stacker")
+    timecode = "2024-11-19_185857"
+    directory = Path(f"{timecode}_smelly")
     master_file = directory/f"{timecode}_master1.csv"
 
     out_parse(directory, master_file)

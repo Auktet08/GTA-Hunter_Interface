@@ -1,19 +1,56 @@
 from pathlib import Path
 import subprocess
 from datetime import datetime
-from opening_og import out_parse
+import argparse
 import sys
 import shutil
 from prepare_input import faa_convert
+from opening_og import out_parse
 
+# file name of the actual GTA Hunter
+GTA_HUNTER = "GTA_Hunter.py"
 
 def main():
-    input_folder_name = "OneDrive_1_11-3-2024 2"
-    output_folder_name = "full_stacker"
-    gta_hunter = "GTA_Hunter.py"
-    gta_hunter_location = "/Users/northk/Documents/gozzi/GTA-Hunter-v1/"
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-i", "--input_folder",
+        type=str, nargs=1,
+        help="input folder containing .gbff .gbk or .faa files"
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=str, nargs=1,
+        help="specific name for output file"
+    )
+    parser.add_argument(
+        "-g", "--gta_hunter",
+        type=str, nargs=1,
+        help="absolute path to the GTA-Hunter Folder"
+    )
 
-    master_folder_name = "master_log"
+    args = parser.parse_args()
+
+    if args.input_folder is not None:
+        input_folder_name = args.input_folder[0]
+    else:
+        input_folder_name = input("INPUT FOLDER NAME: ")
+
+    if args.gta_hunter is not None:
+        gta_hunter_location = args.gta_hunter[0]
+    else:
+        with open("settings.txt", "r+") as settings:
+            content = settings.readlines()
+            try:
+                gta_hunter_location = content[1]
+            except IndexError:
+                print("INITIALIZING...")
+                gta_hunter_location = input("ABSOLUTE PATH OF GTA HUNTER FOLDER: ")
+                settings.write(f"\n{gta_hunter_location}")
+
+    if args.output is not None:
+        output_folder_name = args.output[0]
+    else:
+        output_folder_name = "output"
 
     """
     === Initialize ===
@@ -24,7 +61,7 @@ def main():
     # set folder
     input_folder = Path(input_folder_name)
     output_path = Path(".")/f"{timecode}_{output_folder_name}"
-    master_path = Path(master_folder_name)
+    master_path = Path("master_log")
 
     """
     === Parse Input ===
@@ -59,7 +96,7 @@ def main():
     === Run the Program ===
     """
 
-    master_command = f"python {gta_hunter} -b -f {input_folder.resolve()} -o {output_path.resolve()} -O"
+    master_command = f"python {GTA_HUNTER} -b -f {input_folder.resolve()} -o {output_path.resolve()} -O"
     # runs the master_log command
     subprocess.run(f"cd {gta_hunter_location} && {master_command}", shell=True)
 
@@ -83,11 +120,13 @@ def main():
     # creates master_log file csv
     master_file = output_path/f"{timecode}_master.csv"
 
-    # parses every results to place into master_log file
+    # parses every result to place into master_log file
     out_parse(output_path, master_file)
 
     # creates copy inside the master_log folder to optimize access
     shutil.copy(master_file, master_path / master_file.name)
+
+    print(f"\nDone.\n")
 
 """
 confirm_input
@@ -106,7 +145,7 @@ def confirm_input(input_folder, output_path):
     print("\n** WARNING: For optimal results, .gbk and .faa filenames should be formated as 'genus_species_strain.ext'")
     proceed = input("\nPROCEED? [Y/N]: ")
     if proceed.casefold() == "n":
-        sys.exit("sorry")
+        sys.exit("sorry\n")
 
     # used for figuring out names of species
     return all_filenames

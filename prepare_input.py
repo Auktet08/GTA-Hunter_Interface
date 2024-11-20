@@ -23,7 +23,7 @@ input_folder(gbff, gbk, faa) -> output_folder(faa)
 4. faa -> destination / faa
 """
 def faa_convert(source, destination):
-    print(f"\nOUTPUT: {destination}")
+    print(f"\nINPUT: {destination}")
     for file in source.glob("*.*"):
         if file.suffix == ".gbff":
             print(per_input(file, destination))
