@@ -38,7 +38,7 @@ def out_parse(directory, master_file):
         print(f" +-- {result.name}")
 
 def csv_convert(input_file):
-    print(f"\n === FILE PARSE : {input_file.stem} ===")
+    # print(f"\n === FILE PARSE : {input_file.stem} ===")
 
     lcl_pattern = r"lcl\|([\w._]+)_prot.*_(\d+) "
     num_pattern = r"\](-?[\d.]+) +(\w+) +(\w+)"
@@ -95,8 +95,8 @@ def csv_convert(input_file):
                 except Exception:
                     pass
             all_rows.append(row_info)
-        for row in all_rows:
-            print(row)
+        # for row in all_rows:
+        #     print(row)
     return all_rows
 if __name__ == '__main__':
     main()

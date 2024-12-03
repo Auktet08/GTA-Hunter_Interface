@@ -6,6 +6,7 @@ import sys
 import shutil
 from prepare_input import faa_convert
 from opening_og import out_parse
+from create_input_file import ncbi_db_extract
 
 # file name of the actual GTA Hunter
 GTA_HUNTER = "GTA_Hunter.py"
@@ -27,8 +28,20 @@ def main():
         type=str, nargs=1,
         help="absolute path to the GTA-Hunter Folder"
     )
+    parser.add_argument(
+        "-x", "--xtract_gbff_ncbi",
+        type=str, nargs=1,
+        help="path to ncbi dataset folder"
+    )
 
+    timecode = str(datetime.today().strftime('%Y-%m-%d_%H%M%S'))
     args = parser.parse_args()
+
+    if args.xtract_gbff_ncbi is not None:
+        ncbi_folder_name = Path(args.xtract_gbff_ncbi[0])
+        gbff_folder_name = Path(f"{timecode}_input_gbff")
+        ncbi_db_extract(ncbi_folder_name, gbff_folder_name)
+        sys.exit(f"Finished Extracting .gbff from {ncbi_folder_name}")
 
     if args.input_folder is not None:
         input_folder_name = args.input_folder[0]
@@ -55,8 +68,6 @@ def main():
     """
     === Initialize ===
     """
-    # initialize folder information (argparse)
-    timecode = str(datetime.today().strftime('%Y-%m-%d_%H%M%S'))
 
     # set folder
     input_folder = Path(input_folder_name)
@@ -81,6 +92,11 @@ def main():
     new_input_folder = output_path / "input"
     new_input_folder.mkdir()
 
+    """
+    create new file, BIG CONVERT
+    - if standard mode, faa_convert
+    - if BIG mode, special faa_convert
+    """
     # convert everything into .faa and place into new input folder
     faa_convert(input_folder, new_input_folder)
 

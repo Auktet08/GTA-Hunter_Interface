@@ -6,7 +6,7 @@ import textwrap
 
 def main():
     # initialize testing
-    input_directory = Path("OneDrive_1_11-3-2024 2")
+    input_directory = Path("gbff_test")
     new_input_dir = Path("faa_test_end")
 
     # faa_convert for input directory
@@ -28,11 +28,11 @@ def faa_convert(source, destination):
         if file.suffix == ".gbff":
             print(per_input(file, destination))
         elif file.suffix == ".gbk":
-            # make sure name information is correct!
             print(per_input(file, destination))
         elif file.suffix == ".faa":
             # make sure name information is correct!
             shutil.move(file, destination / file.name)
+            print(f"+-- {file.name}")
 
 """
 per_input
