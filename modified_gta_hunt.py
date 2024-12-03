@@ -37,6 +37,10 @@ def main():
     timecode = str(datetime.today().strftime('%Y-%m-%d_%H%M%S'))
     args = parser.parse_args()
 
+    """
+    for specifically extracting gbff from ncbi database
+    """
+
     if args.xtract_gbff_ncbi is not None:
         ncbi_folder_name = Path(args.xtract_gbff_ncbi[0])
         gbff_folder_name = Path(f"{timecode}_input_gbff")
